@@ -89,13 +89,17 @@
             document.getElementById('g-recaptcha-error').innerHTML = '';
         }
     </script>
+
+
     <script type="text/javascript">
+        
         var onloadCallback = function() {
             grecaptcha.render('html_elementCapcha', {
                 'sitekey': '6LfvP3EcAAAAAANQD4TZ1hGyvNhoyxjns25cC95_',
                 'callback': onSubmit
             });
         };
+        //onloadCallback();
     </script>
 
 </head>
@@ -190,8 +194,8 @@
                                 <div class="col-3">
                                     <div class="form-group">
                                         <div id="html_elementCapcha"></div>
-                                        <!--  <div class="g-recaptcha" data-sitekey="6LfvP3EcAAAAAANQD4TZ1hGyvNhoyxjns25cC95_" data-callback="verifyCaptcha"></div>-->
-                                        <div id="g-recaptcha-error"></div>
+                                        <div class="g-recaptcha" data-sitekey="6LfvP3EcAAAAAANQD4TZ1hGyvNhoyxjns25cC95_" data-callback="verifyCaptcha"></div>
+                                        <div id="g-recaptcha-error"></div> 
                                     </div>
                                 </div>
                                 <div class="col-3">
