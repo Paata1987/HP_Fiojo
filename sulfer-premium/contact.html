@@ -40,64 +40,108 @@
     <!-- Responsive CSS Style -->
     <link rel="stylesheet" type="text/css" href="asset/css/responsive.css">
 
+    <meta name="msvalidate.01" content="B7807734CA7AACC0779B341BBB766A4E" />
+    <meta name="p:domain_verify" content="78ad0b4e41a4f27490d91585cb10df4a"/>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="asset/js/modernizrr.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145078782-1"></script>
     <script>
-        // this block must be defined before api.js is included
-        function onSubmit(token) {
-            var fields = $('#contact-form').serializeArray(); // get your form data
-            fields.push({
-                name: "g-recaptcha-response",
-                value: token
-            }); // add token to post
-            $.ajax({
-                type: "POST",
-                url: "api.fiojo.com/contacthome",
-                data: fields,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status) {
-                        $('#contact-form input').val('');
-                        $('#contact-form textarea').val('');
-                    }
-                    $('#response').empty().html(response.html);
-                }
-            });
-            grecaptcha.reset(); // to reset their widget for any other tries
-        }
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-145078782-1');
     </script>
+    <style>
+    .hh_button {
+    display: inline-block;
+    text-decoration: none;
+    background: linear-gradient(to right,#ff8a00,#da1b60);
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    font-size: 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    position: relative;
+    margin-top: 30px;
+    margin: 0px;
+    position: absolute;
+    right: 20px;
+    top: 1.5%;
+    }
+    header {
+    background: #222;
+    color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    }
+    header a,  header a:hover {
+        text-decoration: none;
+        color: white;
+    }
+    .list-unstyled {
+        color: red;
+    }
+    </style>
+</head>
 
-    <script type="text/javascript">
-        var recaptcha_response = '';
 
-        function submitUserForm() {
 
-            if (recaptcha_response.length == 0) {
-                document.getElementById('g-recaptcha-error').innerHTML = '<span style="color:red;"> Capture This field is required.</span>';
 
+  
+
+  <script>
+        $(function () {
+
+            window.verifyRecaptchaCallback = function (response) {
+                $('input[data-recaptcha]').val(response).trigger('change');
             }
 
-            var token = $("#g-recaptcha-response").val();
-            onSubmit()
-            console.log("OK posted")
-        }
+            window.expiredRecaptchaCallback = function () {
+                $('input[data-recaptcha]').val("").trigger('change');
+            }
 
-        function verifyCaptcha(token) {
-            recaptcha_response = token;
-            document.getElementById('g-recaptcha-error').innerHTML = '';
-        }
-    </script>
-    <script type="text/javascript">
-        var onloadCallback = function() {
-            grecaptcha.render('html_elementCapcha', {
-                'sitekey': '6LfvP3EcAAAAAANQD4TZ1hGyvNhoyxjns25cC95_',
-                'callback': onSubmit
-            });
-        };
-    </script>
+            $('#contact-form').validator();
 
+            $('#contact-form').on('submit', function (e) {
+                if (!e.isDefaultPrevented()) {
+                    var apUurl = "api.fiojo.com/contacthome";
+                    /* var NavigatorLanguage = navigator.language || navigator.userLanguage; 
+                        console.info("The language is: " + userLang); */
+                    var fields = $('#contact-form').serializeArray();
+
+                    $.ajax({
+                        method: "POST",
+                        url: apUurl,
+                        dataType: JSON,
+                        data: fields,
+                        success: function(data) {
+                            var messageAlert = 'alert-' + data.type;
+                            var messageText = data.message;
+
+                            var alertBox = '<div class="alert ' + messageAlert + ' alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + messageText + '</div>';
+                            if (messageAlert && messageText) {
+                                $('#contact-form').find('.messages').html(alertBox);
+                                $('#contact-form')[0].reset();
+                                grecaptcha.reset();
+                            }
+                        },
+
+                    }); 
+
+                    return false;
+                }
+            })
+        });
+
+  </script>
 </head>
 
 <body>
@@ -162,53 +206,66 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <form method="post" onsubmit="submitUserForm()" name="sentMessage" id="contactForm" validate>
 
-                        <div class="row">
-                            <div class="col-md-6 wow fadeInLeft" data-wow-duration="2s" data-wow-delay="600ms">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Your Name *" id="name" required data-validation-required-message="Please enter your name." required>
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" class="form-control" placeholder="Your Email *" id="email" required data-validation-required-message="Please enter your email address.">
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                                <div class="form-group">
-                                    <input type="tel" class="form-control" placeholder="Your Phone *" id="phone" required data-validation-required-message="Please enter your phone number.">
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 wow fadeInRight" data-wow-duration="2s" data-wow-delay="600ms">
 
-                                <div class="form-group">
-                                    <textarea class="form-control" placeholder="Your Message *" id="message" required data-validation-required-message="Please write your message" required></textarea>
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                            </div>
+
+
+
+                    <form id="contact-form" method="post" role="form">
+
+                        <div class="messages"></div>
+    
+                        <div class="controls">
                             <div class="row">
-                                <div class="col-3">
+                                <div class="col-lg-6">
                                     <div class="form-group">
-                                        <div id="html_elementCapcha"></div>
-                                        <!--  <div class="g-recaptcha" data-sitekey="6LfvP3EcAAAAAANQD4TZ1hGyvNhoyxjns25cC95_" data-callback="verifyCaptcha"></div>-->
-                                        <div id="g-recaptcha-error"></div>
+                                        <label for="form_name">Firstname *</label>
+                                        <input id="form_name" type="text" name="name" class="form-control" placeholder="Please enter your firstname *" required="required"
+                                            data-error="Firstname is required.">
+                                        <div class="help-block with-errors"></div>
                                     </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="text-center wow zoomIn" data-wow-duration="1s" data-wow-delay="600ms">
-                                        <div id="success"></div>
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Send Message</button>
+                                            <label for="form_email">Email *</label>
+                                            <input id="form_email" type="email" name="email" class="form-control" placeholder="Please enter your email *" required="required"
+                                                   data-error="Valid email is required.">
+                                            <div class="help-block with-errors"></div>
                                         </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="form_message">Message *</label>
+                                        <textarea id="form_message" name="message" class="form-control" placeholder="Message for me *" rows="4" required="required"
+                                            data-error="Please, leave us a message."></textarea>
+                                        <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
+                                
                             </div>
-
-
-                            <div class="clearfix"></div>
-
+                            
+                            
+    
+    
+                            <div class="form-group">
+                                <div class="g-recaptcha" data-sitekey="6LfvP3EcAAAAAANQD4TZ1hGyvNhoyxjns25cC95_" data-callback="verifyRecaptchaCallback" data-expired-callback="expiredRecaptchaCallback"></div>
+                                <input   class="form-control invisible d-none" data-recaptcha="true" required data-error="Please complete the Captcha">
+                                <div class="help-block with-errors"></div>
+                            </div>
+    
+    
+                                <input type="submit" class="btn btn-primary btn-send" value="Send message">
+                                <ins class="adsbygoogle"
+                                style="display:block"
+                                data-ad-format="fluid"
+                                data-ad-layout-key="-fb+5w+4e-db+86"
+                                data-ad-client="ca-pub-1506739985879215"
+                                data-ad-slot="5016195832"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
                         </div>
+    
                     </form>
+    
                 </div>
             </div>
         </div>
@@ -257,7 +314,7 @@
     <!-- Google Map -->
     <script src="asset/js/map.js"></script>
     <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-
+    <script src="asset/js/validator.js"></script>
     <script src="asset/js/script.js"></script>
 
 
